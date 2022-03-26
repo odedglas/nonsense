@@ -1,31 +1,30 @@
-import Canvas from '../canvas';
-import { ArtItem } from '../art/interface';
+import Canvas from "../canvas";
+import { ArtItem } from "../art/interface";
 
 class ArtController {
-    activeArt?: ArtItem;
+  activeArt?: ArtItem;
 
-    init() {
-        console.log('Init ran')
-        Canvas.init();
-    }
+  init() {
+    Canvas.init();
+  }
 
-    start(art: ArtItem) {
-        this.activeArt = art;
+  start(art: ArtItem) {
+    this.activeArt = art;
 
-        art.init();
+    art.init();
 
-        art.draw();
+    art.draw();
 
-        Canvas.toggleBoardClass(art.boardClassName);
-    }
+    Canvas.toggleBoardClass(art.boardClassName);
+  }
 
-    stop() {
-        Canvas.destroy();
+  stop() {
+    Canvas.destroy();
 
-        this.activeArt?.destroy();
+    this.activeArt?.destroy();
 
-        Canvas.toggleBoardClass(this.activeArt?.boardClassName || '');
-    }
+    Canvas.toggleBoardClass(this.activeArt?.boardClassName || "");
+  }
 }
 
 export default new ArtController();

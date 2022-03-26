@@ -1,135 +1,121 @@
-import Canvas from '../../canvas';
-import { painter } from '../../painter';
-import { ArtItem, Position } from '../interface';
-import { Particle } from './Particle';
-import { increaseHue, setAllowInteraction, setMousePosition } from './state';
+import Canvas from "../../canvas";
+import { painter } from "../../painter";
+import { ART_TITLE } from "../constants";
+import { ArtItem, Position } from "../interface";
+import { Particle } from "./Particle";
+import { increaseHue, setAllowInteraction, setMousePosition } from "./state";
 
 export class ParticleText implements ArtItem {
-    stopped = false;
-    title = 'Particle Text';
-    boardClassName = 'particle-text';
-    particles: Particle[] = [];
-    idleTimer: number = 0;
+  stopped = false;
+  title = ART_TITLE.PARTICLE_TEXT;
+  boardClassName = "particle-text";
+  particles: Particle[] = [];
+  idleTimer = 0;
 
-    init(text = 'Heya') {
-        this.stopped = false;
-        Canvas.canvas.addEventListener('mousemove', this.handleMouseMove);
+  init(text = "Heya") {
+    this.stopped = false;
+    Canvas.canvas.addEventListener("mousemove", this.handleMouseMove);
 
-        const coordinates = ParticleText.generateTextCoordinates(text);
-        coordinates.forEach((coordinate) => {
-            this.addParticle(coordinate);
-            increaseHue();
-        });
+    const coordinates = ParticleText.generateTextCoordinates(text);
+    coordinates.forEach((coordinate) => {
+      this.addParticle(coordinate);
+      increaseHue();
+    });
 
-        this.draw();
+    this.draw();
+  }
+
+  draw = () => {
+    if (this.stopped) {
+      return;
     }
 
-    draw = () => {
-        if (this.stopped) { return; }
+    painter.wipe();
 
-        painter.wipe();
+    this.particles.forEach((particle, index) => {
+      particle.update();
+      particle.draw();
 
-        this.particles.forEach((particle, index) => {
-            particle.update();
-            particle.draw();
+      const rest = this.particles.slice(index + 1, this.particles.length - 1);
 
-            const rest = this.particles.slice(
-                index + 1,
-                this.particles.length - 1
-            );
+      particle.connect(rest);
+    });
 
-            particle.connect(rest);
-        });
+    requestAnimationFrame(this.draw);
+  };
 
-        requestAnimationFrame(this.draw);
-    }
+  destroy() {
+    this.stopped = true;
+    this.particles = [];
+    this.idleTimer && clearTimeout(this.idleTimer);
 
-    destroy() {
-        this.stopped = true;
-        this.particles = [];
-        this.idleTimer && clearTimeout(this.idleTimer);
+    Canvas.canvas.removeEventListener("mousemove", this.handleMouseMove);
+  }
 
-        Canvas.canvas.removeEventListener('mousemove', this.handleMouseMove);
-    }
+  private handleMouseMove = (event: MouseEvent) => {
+    setMousePosition(event);
+    setAllowInteraction();
+    this.idleTimer && clearTimeout(this.idleTimer);
 
-    private handleMouseMove = (event: MouseEvent) => {
-        setMousePosition(event);
-        setAllowInteraction();
-        this.idleTimer && clearTimeout(this.idleTimer);
+    this.idleTimer = setTimeout(() => setAllowInteraction(false), 1500);
+  };
 
-        this.idleTimer = setTimeout(
-            () => setAllowInteraction(false),
-            1500
-        );
-    }
+  private addParticle = (position: Position) => {
+    const particle = new Particle(position.x, position.y);
 
-    private addParticle = (position: Position) => {
-        const particle = new Particle(
-            position.x,
-            position.y
-        );
+    this.particles.push(particle);
+  };
 
-        this.particles.push(particle);
+  private static generateTextCoordinates(text: string): Position[] {
+    const coordinates: Position[] = [];
+    const positionAdjustement = 20;
+    const positionMultiplier = 10;
+    const drawingArea = {
+      width: 100,
+      height: 100,
     };
+    // Opacity is represented inside a clamped array, 255 is 1, so 128 marks ~50%
+    const minPixelOpacity = 128;
 
-    private static generateTextCoordinates(text: string): Position[] {
-        let coordinates: Position[] = [];
-        const positionAdjustement = 20;
-        const positionMultiplier = 10;
-        const drawingArea = {
-            width: 100,
-            height: 100,
-        };
-        // Opacity is represented inside a clamped array, 255 is 1, so 128 marks ~50%
-        const minPixelOpacity = 128;
+    // Stylinng
+    Canvas.drawingContext.fillStyle = "white";
+    Canvas.drawingContext.font = "24px Verdana";
+    Canvas.drawingContext.fillText(text, 0, 30);
 
-        // Stylinng
-        Canvas.drawingContext.fillStyle = 'white';
-        Canvas.drawingContext.font = '24px Verdana';
-        Canvas.drawingContext.fillText(text, 0, 30);
+    // The Uint8ClampedArray
+    const imageData = Canvas.drawingContext.getImageData(
+      0,
+      0,
+      drawingArea.width,
+      drawingArea.height
+    );
 
-        // The Uint8ClampedArray
-        const imageData = Canvas.drawingContext.getImageData(
-            0,
-            0,
-            drawingArea.width,
-            drawingArea.height
-        );
+    // Iterate over data grid, 100x100
+    // Each pixel represented in rgba ( 4 items inside the array )
+    const opacityRepresentationIndex = 3;
 
-        // Iterate over data grid, 100x100
-        // Each pixel represented in rgba ( 4 items inside the array )
-        const opacityRepresentationIndex = 3;
+    for (let y = 0; y < drawingArea.height; y++) {
+      for (let x = 0; x < drawingArea.width; x++) {
+        const yOpacityIndex = y * 4;
+        const xOpacityIndex = x * 4;
+        // The current pixel opacity index representationn
+        const opacityIndex =
+          drawingArea.height * yOpacityIndex +
+          xOpacityIndex +
+          opacityRepresentationIndex;
 
-        for (
-            let y = 0;
-            y < drawingArea.height;
-            y++
-        ) {
-            for (
-                let x = 0;
-                x < drawingArea.width;
-                x++
-            ) {
-                const yOpacityIndex = y * 4;
-                const xOpacityIndex = x * 4;
-                // The current pixel opacity index representationn
-                const opacityIndex =
-                    drawingArea.height * yOpacityIndex +
-                    xOpacityIndex +
-                    opacityRepresentationIndex;
+        // The current pixel opacity value
+        const pixelOpacity = imageData.data[opacityIndex];
 
-                // The current pixel opacity value
-                const pixelOpacity = imageData.data[opacityIndex];
-
-                // If not transparent, adds coordinate
-                if (pixelOpacity > minPixelOpacity) {
-                    coordinates.push({
-                        x: x * positionMultiplier + positionAdjustement,
-                        y: y * positionMultiplier + positionAdjustement,
-                    });
-                }
-            }
+        // If not transparent, adds coordinate
+        if (pixelOpacity > minPixelOpacity) {
+          coordinates.push({
+            x: x * positionMultiplier + positionAdjustement,
+            y: y * positionMultiplier + positionAdjustement,
+          });
         }
-        return coordinates;
+      }
     }
+    return coordinates;
+  }
 }
