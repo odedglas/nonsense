@@ -20,12 +20,14 @@ interface DrawerProps {
   open: boolean;
   arts: ArtItem[];
   handleDrawerClose: () => void;
+  onItemClick: (art: ArtItem) => void;
 }
 
 export const AppDrawer: React.FC<DrawerProps> = ({
   open,
   handleDrawerClose,
   arts,
+  onItemClick,
 }) => (
   <Drawer
     sx={{
@@ -50,7 +52,7 @@ export const AppDrawer: React.FC<DrawerProps> = ({
       const Icon = artsIconMap[art.title];
 
       return (
-        <ListItem button key={art.title}>
+        <ListItem button key={art.title} onClick={() => onItemClick(art)}>
           <ListItemIcon>
             <Icon />
           </ListItemIcon>

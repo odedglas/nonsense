@@ -1,7 +1,7 @@
 import Canvas from "../canvas";
 import { ArtItem } from "../art/interface";
 
-class ArtController {
+class BoardController {
   activeArt?: ArtItem;
 
   init() {
@@ -27,4 +27,4 @@ class ArtController {
   }
 }
 
-export default new ArtController();
+export default new BoardController();

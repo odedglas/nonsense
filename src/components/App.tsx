@@ -9,12 +9,13 @@ import { Main, DrawerHeader } from "./Main";
 import { AppBar } from "./AppBar";
 import { AppDrawer } from "./Drawer";
 import Canvas from "../canvas";
-import artController from "../controller/Art";
+import BoardController from "../controller/Board";
+import { ArtItem } from "../art/interface";
 import { arts } from "../art";
 
 const App = () => {
-  const [activeArtIndex] = useState(0);
-  const [open, setOpen] = useState(false);
+  const [activeArtIndex, setActiveArtIndex] = useState(0);
+  const [open, setOpen] = useState(true);
 
   const art = arts[activeArtIndex];
 
@@ -28,12 +29,18 @@ const App = () => {
     Canvas.fitCanvas();
   };
 
+  const setActiveArt = (art: ArtItem) => {
+    const activeArt = arts.findIndex((item) => item.title === art.title);
+
+    setActiveArtIndex(activeArt);
+  };
+
   useEffect(() => {
-    artController.init();
+    BoardController.init();
   }, []);
 
   useEffect(() => {
-    artController.start(art);
+    BoardController.start(art);
   }, [activeArtIndex]);
 
   return (
@@ -57,6 +64,7 @@ const App = () => {
       </AppBar>
       <AppDrawer
         handleDrawerClose={handleDrawerClose}
+        onItemClick={setActiveArt}
         arts={arts}
         open={open}
       />
@@ -70,7 +78,7 @@ const App = () => {
 
 if (import.meta.hot) {
   import.meta.hot.dispose(() => {
-    artController.stop();
+    BoardController.stop();
   });
 }
 
