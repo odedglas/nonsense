@@ -2,19 +2,16 @@ import Canvas from "../../canvas";
 import { painter } from "../../painter";
 import { ART_TITLE } from "../constants";
 import { ArtItem, Position } from "../interface";
-import { Particle } from "./Particle";
-import { increaseHue, setAllowInteraction, setMousePosition } from "./state";
+import { Particle, increaseHue } from "./Particle";
 
 export class ParticleText implements ArtItem {
   stopped = false;
   title = ART_TITLE.PARTICLE_TEXT;
   boardClassName = "particle-text";
   particles: Particle[] = [];
-  idleTimer = 0;
 
   init(text = "Heya") {
     this.stopped = false;
-    Canvas.canvas.addEventListener("mousemove", this.handleMouseMove);
 
     const coordinates = ParticleText.generateTextCoordinates(text);
     coordinates.forEach((coordinate) => {
@@ -47,18 +44,7 @@ export class ParticleText implements ArtItem {
   destroy() {
     this.stopped = true;
     this.particles = [];
-    this.idleTimer && clearTimeout(this.idleTimer);
-
-    Canvas.canvas.removeEventListener("mousemove", this.handleMouseMove);
   }
-
-  private handleMouseMove = (event: MouseEvent) => {
-    setMousePosition(event);
-    setAllowInteraction();
-    this.idleTimer && clearTimeout(this.idleTimer);
-
-    this.idleTimer = setTimeout(() => setAllowInteraction(false), 1500);
-  };
 
   private addParticle = (position: Position) => {
     const particle = new Particle(position.x, position.y);

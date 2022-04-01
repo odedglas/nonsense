@@ -1,7 +1,11 @@
+import { allowInteraction, mouse } from "../../controller/Board";
 import { Position } from "../interface";
-import { allowInteraction, hue, mouse } from "./state";
 import { INTERACTION_RADIUS } from "./constants";
 import { painter } from "../../painter";
+
+let hue = 0;
+
+export const increaseHue = () => (hue += 0.5);
 
 export class Particle {
   private readonly position: Position;
