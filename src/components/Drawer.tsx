@@ -8,12 +8,14 @@ import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import FormatShapesIcon from "@mui/icons-material/FormatShapes";
+import MouseIcon from '@mui/icons-material/Mouse';
 import ListItemText from "@mui/material/ListItemText";
 import { ArtItem } from "../art/interface";
 import { ART_TITLE } from "../art/constants";
 
 const artsIconMap = {
   [ART_TITLE.PARTICLE_TEXT]: FormatShapesIcon,
+  [ART_TITLE.MOUSE_TRACKER]: MouseIcon,
 };
 
 interface DrawerProps {
@@ -49,7 +51,7 @@ export const AppDrawer: React.FC<DrawerProps> = ({
     </DrawerHeader>
     <Divider />
     {arts.map((art) => {
-      const Icon = artsIconMap[art.title];
+      const Icon = artsIconMap[art.title] || FormatShapesIcon;
 
       return (
         <ListItem button key={art.title} onClick={() => onItemClick(art)}>

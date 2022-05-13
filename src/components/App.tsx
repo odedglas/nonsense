@@ -40,6 +40,7 @@ const App = () => {
   }, []);
 
   useEffect(() => {
+    art && BoardController.stop(art);
     BoardController.start(art);
   }, [activeArtIndex]);
 

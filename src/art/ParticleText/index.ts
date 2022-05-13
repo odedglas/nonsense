@@ -1,16 +1,16 @@
 import Canvas from "../../canvas";
 import { painter } from "../../painter";
 import { ART_TITLE } from "../constants";
-import { ArtItem, Position } from "../interface";
+import { AbstractArt, Position } from "../interface";
 import { Particle, increaseHue } from "./Particle";
 
-export class ParticleText implements ArtItem {
+export class ParticleText extends AbstractArt {
   stopped = false;
   title = ART_TITLE.PARTICLE_TEXT;
-  boardClassName = "particle-text";
+  boardClassName = "black-board";
   particles: Particle[] = [];
 
-  init(text = "Heya") {
+  init = (text = "Heya") => {
     this.stopped = false;
 
     const coordinates = ParticleText.generateTextCoordinates(text);
@@ -41,7 +41,7 @@ export class ParticleText implements ArtItem {
     requestAnimationFrame(this.draw);
   };
 
-  destroy() {
+  destroy = () => {
     this.stopped = true;
     this.particles = [];
   }
@@ -102,6 +102,7 @@ export class ParticleText implements ArtItem {
         }
       }
     }
+    
     return coordinates;
   }
 }

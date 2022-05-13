@@ -17,7 +17,7 @@ class BoardController {
 
     art.draw();
 
-    Canvas.toggleBoardClass(art.boardClassName);
+    Canvas.toggleBoardClass(this.activeArt?.boardClassName, false);
 
     Canvas.canvas.addEventListener("mousemove", this.handleMouseMove);
   }
@@ -27,7 +27,7 @@ class BoardController {
 
     this.activeArt?.destroy();
 
-    Canvas.toggleBoardClass(this.activeArt?.boardClassName || "");
+    Canvas.toggleBoardClass(this.activeArt?.boardClassName, true);
 
     Canvas.canvas.removeEventListener("mousemove", this.handleMouseMove);
   }
@@ -35,8 +35,11 @@ class BoardController {
   private handleMouseMove = (event: MouseEvent) => {
     setMousePosition(event);
     setAllowInteraction();
+    
+    this.activeArt?.onMouseMove?.(event);
+    
     this.idleTimer && clearTimeout(this.idleTimer);
-
+    
     this.idleTimer = setTimeout(() => setAllowInteraction(false), 1500);
   };
 }

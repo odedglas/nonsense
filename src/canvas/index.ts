@@ -21,12 +21,13 @@ class Canvas {
     this.fitCanvas();
   }
 
-  toggleBoardClass(className: string) {
+  toggleBoardClass(className= '', remove = false) {
     if (!className) {
       return;
     }
 
-    this.canvas.classList.toggle(className);
+    const toggleMethod = remove ? 'remove': 'add';
+    this.canvas.classList[toggleMethod](className);
   }
 
   get drawingContext() {

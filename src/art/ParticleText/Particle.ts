@@ -35,7 +35,7 @@ export class Particle {
     const movementX = dx / distance;
     const movementY = dy / distance;
 
-    // Gravitation around mouse point further they are, faster they are pulled
+    // Gravitation around mouse point further they are, slower they are pushed
     const gravitation = (INTERACTION_RADIUS - distance) / INTERACTION_RADIUS;
 
     // The movement multiplier to add to a given particle once in interaction range.
@@ -53,7 +53,7 @@ export class Particle {
 
     const relativeOpacityRatio = INTERACTION_RADIUS / distance;
     const opacity = 75 + Math.min(relativeOpacityRatio * 5, 25);
-    //
+
     this.color = `hsl(${this.baseHue}, ${opacity}%, ${
       this.interacting ? 50 : 100
     }%)`;
