@@ -10,6 +10,7 @@ export interface ArtItem {
   destroy: () => void;
   draw: () => void;
   onMouseMove: (event: MouseEvent) => void;
+  renderControls: () => JSX.Element | undefined;
 }
 
 export abstract class AbstractArt implements ArtItem {
@@ -19,5 +20,6 @@ export abstract class AbstractArt implements ArtItem {
   abstract draw: () => void;
   onMouseMove = () => {};
   init = (arg1: any) => {};
-  destroy = () => {}
+  destroy = () => {};
+  renderControls = () => undefined;
 }

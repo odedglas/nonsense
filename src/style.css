@@ -1,3 +1,12 @@
 .black-board {
   background: black;
 }
+
+.measure-plain {
+  display: none;
+}
+
+.controls {
+  padding: 0 32px;
+  max-width: 500px;
+}

@@ -10,12 +10,14 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import FormatShapesIcon from "@mui/icons-material/FormatShapes";
 import MouseIcon from '@mui/icons-material/Mouse';
 import ListItemText from "@mui/material/ListItemText";
+import AbcIcon from '@mui/icons-material/Abc';
 import { ArtItem } from "../art/interface";
 import { ART_TITLE } from "../art/constants";
 
 const artsIconMap = {
   [ART_TITLE.PARTICLE_TEXT]: FormatShapesIcon,
   [ART_TITLE.MOUSE_TRACKER]: MouseIcon,
+  [ART_TITLE.ASCII_IMAGE]: AbcIcon,
 };
 
 interface DrawerProps {

@@ -8,6 +8,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { Main, DrawerHeader } from "./Main";
 import { AppBar } from "./AppBar";
 import { AppDrawer } from "./Drawer";
+import { Controlls } from "./Controlls";
 import Canvas from "../canvas";
 import BoardController from "../controller/Board";
 import { ArtItem } from "../art/interface";
@@ -40,8 +41,7 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    art && BoardController.stop(art);
-    BoardController.start(art);
+    BoardController.toggleArt(art);
   }, [activeArtIndex]);
 
   return (
@@ -71,7 +71,9 @@ const App = () => {
       />
       <Main open={open}>
         <DrawerHeader />
-        <canvas id="board" />
+        <canvas id="board"/>
+        <canvas id="measure-plain" className="measure-plain"/>
+        <Controlls art={art}/>
       </Main>
     </Box>
   );

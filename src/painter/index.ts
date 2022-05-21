@@ -1,6 +1,8 @@
 import Canvas from "../canvas";
 import { Position } from "../art/interface";
 
+let measurePlainCanvas: HTMLCanvasElement | null;
+
 export const painter = {
   wipe: () =>
     Canvas.drawingContext.clearRect(
@@ -27,4 +29,30 @@ export const painter = {
     Canvas.drawingContext.lineWidth = size;
     Canvas.drawingContext.closePath();
   },
+
+  letter: (letter: string, color: string, position: Position, size: number) => {
+    Canvas.drawingContext.fillStyle = color;
+    Canvas.drawingContext.font = `${size + 8}px Verdana`;
+    Canvas.drawingContext.fillText(letter, position.x, position.y);
+  },
+
+  imageData: (bitmap: ImageBitmap) => {
+    measurePlainCanvas ||= document.querySelector('#measure-plain');
+
+    if (!measurePlainCanvas) { throw new Error('Could not find "measure-plain" cavnas'); }
+    
+    measurePlainCanvas.width = bitmap.width;
+    measurePlainCanvas.height = bitmap.height;
+
+    Canvas.drawingContext.drawImage(bitmap, 0, 0);
+
+    const imageData = Canvas.drawingContext.getImageData(
+        0,
+        0,
+        measurePlainCanvas.width,
+        measurePlainCanvas.height
+    );
+
+    return imageData;
+  }
 };

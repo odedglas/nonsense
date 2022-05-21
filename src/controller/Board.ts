@@ -10,6 +10,11 @@ class BoardController {
     Canvas.init();
   }
 
+  toggleArt(art: ArtItem) {
+    this.stop();
+    this.start(art);
+  }
+  
   start(art: ArtItem) {
     this.activeArt = art;
 
